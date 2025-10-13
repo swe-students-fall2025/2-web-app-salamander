@@ -21,6 +21,7 @@ As a student, I want to track my job applications so I can organize deadlines an
 - As a user, I want to sort my applications by deadline, company, or status so that I can prioritize easily.
 - As a user, I want to view color-coded statuses (e.g., green for offers, red for rejections) so that I can recognize progress at a glance.
 - As a user, I want to view an application's details in a clean, mobile-friendly layout so that I can quickly read and update information on my phone.
+- As a user, I want clear validation and success/error messages when updating my profile so I know what happened.
 
 ### Analytics
 
@@ -36,6 +37,8 @@ As a student, I want to track my job applications so I can organize deadlines an
 4. As a user, I want my input forms to validate required fields (title, company, deadline) so that incomplete entries don’t break the dashboard.
 5. As a user, I want automatic sorting of applications by deadline so that the most urgent ones appear first.
 6. As a user, I want the system to prevent duplicate entries for the same role and company so that my data stays clean.
+7. As a user, I want to view my profile (name, pronouns, graduation term, year) so I can confirm what the app has on file.
+8. As a user, I want to edit and save my profile so my information stays current.
 
 ## Steps necessary to run the software
 
