@@ -47,4 +47,4 @@ Use the command below to download the project to your computer:
 
 ## Task boards
 
-See instructions. Delete this line and place a link to the task boards here.
+https://github.com/users/axie22/projects/2/views/1
