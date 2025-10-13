@@ -48,6 +48,50 @@ Use the command below to download the project to your computer:
 
 `git clone https://github.com/swe-students-fall2025/2-web-app-salamander.git`
 
+2. Install the dependencies
+
+Run the following command to install the necessary dependencies:
+
+`pip install -r requirements.txt`
+
+3. Create your own .env file
+
+Copy the example env file to your own by running the following command:
+
+`cp env.example .env`
+
+### Directory Layout
+
+
+``` bash
+app/
+  __init__.py            # create_app()
+  db.py                  # DB connection 
+  models/
+    __init__.py
+    user.py              # User model logic
+    application.py       # Job application model
+  auth/                  # handles login/signup/logout
+    __init__.py
+    routes.py
+    templates/
+      login.html
+      signup.html
+  dashboard/             # main CRUD + search
+    __init__.py
+    routes.py
+    templates/
+      dashboard.html
+      new.html
+      edit.html
+  static/                # styling
+    css/
+      styles.css
+    js/
+      dashboard.js
+
+```
+
 ## Task boards
 
 https://github.com/users/axie22/projects/2/views/1
