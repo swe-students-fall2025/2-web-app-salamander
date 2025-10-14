@@ -60,6 +60,12 @@ Copy the example env file to your own by running the following command:
 
 `cp env.example .env`
 
+4. Run the Flask App
+
+``` bash
+flask --app app run --debug
+```
+
 ### Directory Layout
 
 
