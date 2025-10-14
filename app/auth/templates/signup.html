@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Sign Up · JobTrackr{% endblock %}
+{% block content %}
+<h1>Create account</h1>
+
+<form method="post" action="{{ url_for('auth.signup_post') }}" novalidate>
+  <input type="hidden" name="next" value="{{ next or '' }}">
+
+  <label>Email
+    <input
+      type="email"
+      name="email"
+      value="{{ request.form.get('email', '') }}"
+      autocomplete="email"
+      spellcheck="false"
+      required
+      autofocus>
+  </label>
+
+  <label>Password
+    <input
+      type="password"
+      name="password"
+      autocomplete="new-password"
+      minlength="6"
+      required>
+  </label>
+  <button type="submit">Create</button>
+</form>
+
+<p>Already have an account? <a href="{{ url_for('auth.login', next=next) }}">Log in</a></p>
+{% endblock %}
