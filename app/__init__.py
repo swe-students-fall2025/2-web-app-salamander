@@ -28,5 +28,7 @@ def create_app():
 
     # Attach login manager to app
     login_manager.init_app(app)
+    print("== URL MAP ==")
+    print(app.url_map)
 
     return app
