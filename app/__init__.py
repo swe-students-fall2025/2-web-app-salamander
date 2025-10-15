@@ -17,7 +17,7 @@ def load_user(user_id: str):
 def create_app():
     load_dotenv()
 
-    app = Flask(__name__)
+    app = Flask(__name__, template_folder="templates", static_folder="static")
     app.config["SECRET_KEY"] = os.getenv("SECRET_KEY", "dev-secret-key")
     app.config["SESSION_COOKIE_NAME"] = os.getenv("SESSION_COOKIE_NAME", "jobtrackr_session")
 
@@ -33,5 +33,7 @@ def create_app():
     login_manager.init_app(app)
     print("== URL MAP ==")
     print(app.url_map)
+
+    print("Jinja search paths:", app.jinja_loader.searchpath)
 
     return app
