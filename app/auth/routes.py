@@ -33,7 +33,7 @@ def login_post():
         return redirect(url_for("auth.login", next=request.form.get("next")))
 
     login_user(user, remember=True)
-    return _redirect_next_or("dashboard.index")
+    return _redirect_next_or("profile.index")
 
 @auth_bp.get("/signup")
 def signup():
