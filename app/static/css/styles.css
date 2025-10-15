@@ -7,61 +7,101 @@
 
 body {
   background: #f7f9fc;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
   color: #333;
+  display: flex;
+  flex-direction: column; 
+  min-height: 100vh;
 }
 
-.container {
+/* ===== Header ===== */
+.nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background: #fff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+.brand {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #2563eb;
+  text-decoration: none;
+}
+
+.nav a {
+  color: #333;
+  margin-left: 1rem;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.nav a:hover {
+  color: #2563eb;
+}
+
+/* ===== Main Section ===== */
+main.container {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+/* ===== Auth Card ===== */
+.auth-card {
   width: 100%;
   max-width: 400px;
-  background: white;
+  background: #fff;
   padding: 2rem;
   border-radius: 1rem;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+  text-align: center;
 }
 
-h1 {
-  text-align: center;
+.auth-card h1 {
   margin-bottom: 1.5rem;
   font-size: 1.8rem;
-  color: #2b2d42;
+  color: #1e293b;
 }
 
+/* ===== Form ===== */
 form {
   display: flex;
   flex-direction: column;
   gap: 1rem;
+  text-align: left;
 }
 
 label {
+  font-size: 0.95rem;
+  color: #374151;
   display: flex;
   flex-direction: column;
-  font-size: 0.95rem;
-  color: #444;
+  gap: 0.4rem;
 }
 
 input[type="email"],
 input[type="password"] {
-  margin-top: 0.4rem;
   padding: 0.7rem 0.8rem;
-  border: 1px solid #d0d0d0;
+  border: 1px solid #d0d5dd;
   border-radius: 0.5rem;
-  font-size: 0.95rem;
+  font-size: 1rem;
+  background: #f9fafb;
   transition: border-color 0.2s, box-shadow 0.2s;
 }
 
 input:focus {
-  border-color: #007bff;
-  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.15);
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
   outline: none;
 }
 
-
+/* ===== Buttons ===== */
 button {
-  background: #007bff;
+  background: #2563eb;
   color: white;
   font-size: 1rem;
   font-weight: 500;
@@ -73,9 +113,10 @@ button {
 }
 
 button:hover {
-  background: #0056b3;
+  background: #1d4ed8;
 }
 
+/* ===== Text Links ===== */
 p {
   text-align: center;
   margin-top: 1rem;
@@ -83,15 +124,16 @@ p {
 }
 
 p a {
-  color: #007bff;
+  color: #2563eb;
   text-decoration: none;
-  transition: color 0.2s;
+  font-weight: 500;
 }
 
 p a:hover {
-  color: #0056b3;
+  text-decoration: underline;
 }
 
+/* ===== Flash Messages ===== */
 .flash {
   list-style: none;
   margin-bottom: 1rem;
@@ -107,11 +149,22 @@ p a:hover {
 }
 
 .flash li.error {
-  background-color: #ffe5e5;
-  color: #c1121f;
+  background-color: #fee2e2;
+  color: #b91c1c;
 }
 
 .flash li.info {
-  background-color: #e8f0fe;
-  color: #003366;
+  background-color: #dbeafe;
+  color: #1e3a8a;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 480px) {
+  .auth-card {
+    padding: 1.5rem;
+  }
+  .nav {
+    flex-direction: column;
+    align-items: center;
+  }
 }
