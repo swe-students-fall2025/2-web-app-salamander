@@ -1,6 +1,50 @@
 {% extends "base.html" %}
 {% block title %}Profile · JobTrackr{% endblock %}
 {% block content %}
-<h1>Profile</h1>
-<p>Welcome, {{ current_user.email if current_user else 'Guest' }}!</p>
+
+<div class="profile-container">
+  <h1>Your Profile</h1>
+
+  {% if not name and not grad_term %}
+    <p style="margin-bottom: 2rem;">No profile details yet — click below to add them!</p>
+  {% endif %}
+
+  <form method="POST" id="profile-form" class="profile-form" style="display:none;">
+    <div class="profile-field">
+      <label>Email</label>
+      <input type="text" name="email" value="{{ email }}" readonly>
+    </div>
+    <div class="profile-field">
+      <label>Name</label>
+      <input type="text" name="name" value="{{ name }}" placeholder="Add your name..." />
+    </div>
+    <div class="profile-field">
+      <label>Graduation Term</label>
+      <input type="text" name="graduation_term" value="{{ grad_term }}" placeholder="e.g. Spring 2026" />
+    </div>
+    <button class="profile-save-btn" type="submit">Save Changes</button>
+  </form>
+
+  <div id="profile-view">
+    <p><strong>Email:</strong> {{ email }}</p>
+    <p><strong>Name:</strong> {{ name or "—" }}</p>
+    <p><strong>Graduation Term:</strong> {{ grad_term or "—" }}</p>
+    <button class="profile-save-btn" onclick="toggleEdit(true)">Edit Profile</button>
+  </div>
+</div>
+
+<script>
+function toggleEdit(editMode) {
+  const form = document.getElementById("profile-form");
+  const view = document.getElementById("profile-view");
+  if (editMode) {
+    form.style.display = "block";
+    view.style.display = "none";
+  } else {
+    form.style.display = "none";
+    view.style.display = "block";
+  }
+}
+</script>
+
 {% endblock %}

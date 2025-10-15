@@ -168,3 +168,56 @@ p a:hover {
     align-items: center;
   }
 }
+/* ===== Profile Page ===== */
+.profile-container {
+  width: 100%;
+  max-width: 600px;
+  background: #fff;
+  padding: 2rem;
+  border-radius: 1rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.profile-container h1 {
+  font-size: 1.8rem;
+  margin-bottom: 1.5rem;
+  color: #1e293b;
+}
+
+.profile-field {
+  margin-bottom: 1rem;
+}
+
+.profile-field label {
+  font-weight: 600;
+  display: block;
+  margin-bottom: 0.3rem;
+}
+
+.profile-field input {
+  width: 100%;
+  padding: 0.6rem;
+  border: 1px solid #d0d5dd;
+  border-radius: 0.5rem;
+  background: #f9fafb;
+}
+
+.profile-field input:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+  outline: none;
+}
+
+.profile-save-btn {
+  background-color: #2563eb;
+  color: #fff;
+  border: none;
+  padding: 0.75rem 1.2rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.profile-save-btn:hover {
+  background-color: #1d4ed8;
+}
