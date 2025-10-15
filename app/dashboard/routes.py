@@ -5,4 +5,4 @@ from . import dashboard_bp
 @dashboard_bp.get("/")
 @login_required
 def index():        
-    return render_template("dashboard/index.html")
+    return render_template("index.html")
