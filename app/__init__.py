@@ -23,8 +23,11 @@ def create_app():
 
     from .auth import auth_bp
     from .dashboard import dashboard_bp
+    from .profile import bp as profile_bp
     app.register_blueprint(auth_bp)
     app.register_blueprint(dashboard_bp)
+    app.register_blueprint(profile_bp)
+
 
     # Attach login manager to app
     login_manager.init_app(app)

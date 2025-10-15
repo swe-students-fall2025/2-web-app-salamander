@@ -1,0 +1,6 @@
+{% extends "base.html" %}
+{% block title %}Profile · JobTrackr{% endblock %}
+{% block content %}
+<h1>Profile</h1>
+<p>Welcome, {{ current_user.email if current_user else 'Guest' }}!</p>
+{% endblock %}
