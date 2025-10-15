@@ -90,6 +90,11 @@ app/
       dashboard.html
       new.html
       edit.html
+  profile/              # user profile page
+    __init__.py
+    routes.py
+    templates/
+      profile.html
   static/                # styling
     css/
       styles.css
