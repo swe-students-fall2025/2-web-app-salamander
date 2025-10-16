@@ -2,6 +2,7 @@ from flask import Flask
 from flask_login import LoginManager
 from dotenv import load_dotenv
 import os
+import logging
 
 from .db import get_db
 from .models.user import User
@@ -28,6 +29,7 @@ def create_app():
     app.register_blueprint(dashboard_bp)
     app.register_blueprint(profile_bp)
 
+    logging.basicConfig(level=logging.DEBUG)
 
     # Attach login manager to app
     login_manager.init_app(app)
