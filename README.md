@@ -100,6 +100,9 @@ app/
       styles.css
     js/
       dashboard.js
+  templates/             # base HTML templates
+    base.html
+    index.html
 
 ```
 
