@@ -221,3 +221,170 @@ p a:hover {
 .profile-save-btn:hover {
   background-color: #1d4ed8;
 }
+
+
+/* ===== Base / layout ===== */
+.dashboard {
+  max-width: 1100px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+  display: grid;
+  gap: 1.25rem;
+}
+
+/* ===== Controls (search, filters, actions) ===== */
+.controls {
+  display: grid;
+  grid-template-columns: 1fr 200px 200px auto auto;
+  gap: .75rem;
+  align-items: center;
+  background: var(--card);
+  padding: 1rem;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border);
+}
+
+.controls input[type="text"],
+.controls select {
+  width: 100%;
+  padding: .6rem .8rem;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: #fff;
+  font-size: .95rem;
+}
+
+.controls button {
+  padding: .6rem 1rem;
+  border: none;
+  border-radius: 10px;
+  background: var(--primary);
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+}
+.controls button:hover { background: var(--primary-600); }
+
+/* Link styled as button (for + Add Job) */
+.controls .button,
+.button {
+  display: inline-block;
+  padding: .6rem 1rem;
+  border-radius: 10px;
+  background: #111827;
+  color: #fff;
+  text-decoration: none;
+  font-weight: 600;
+}
+.controls .button:hover, .button:hover { opacity: .9; }
+
+/* Stack controls on small screens */
+@media (max-width: 900px) {
+  .controls { grid-template-columns: 1fr 1fr; }
+  .controls button, .controls .button { grid-column: span 2; }
+}
+
+/* ===== Stats row ===== */
+.stats {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: .75rem;
+}
+.stats > div {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: .9rem 1rem;
+  color: var(--muted);
+  font-weight: 600;
+}
+.stats strong {
+  display: block;
+  font-size: 1.25rem;
+  color: var(--text);
+  margin-top: .25rem;
+}
+@media (max-width: 900px) {
+  .stats { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* ===== Upcoming deadlines ===== */
+.upcoming {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 1rem 1.25rem;
+}
+.upcoming h2 { margin-bottom: .5rem; }
+.upcoming ul { list-style: none; padding: 0; margin: .25rem 0 0; }
+.upcoming li {
+  padding: .5rem 0;
+  border-bottom: 1px dashed var(--border);
+}
+.upcoming li:last-child { border-bottom: 0; }
+.upcoming p { color: var(--muted); }
+
+/* ===== Applications list (table) ===== */
+.list {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 1rem 1.25rem;
+}
+
+.list h2 { margin-bottom: .75rem; }
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: .95rem;
+}
+
+thead th {
+  text-align: left;
+  font-weight: 700;
+  color: #111827;
+  border-bottom: 2px solid var(--border);
+  padding: .6rem .5rem;
+}
+
+tbody td {
+  padding: .6rem .5rem;
+  border-bottom: 1px solid var(--border);
+  vertical-align: middle;
+}
+
+tbody tr:hover {
+  background: #f9fafb;
+}
+
+td a { color: var(--primary); text-decoration: none; font-weight: 600; }
+td a:hover { text-decoration: underline; }
+
+/* ===== Pager ===== */
+.pager {
+  display: flex;
+  justify-content: center;
+  gap: .75rem;
+  align-items: center;
+  margin-top: 1rem;
+}
+
+.pager a {
+  padding: .45rem .8rem;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: #fff;
+  text-decoration: none;
+  color: var(--text);
+}
+.pager a:hover { background: #f3f4f6; }
+
+.pager span { color: var(--muted); font-weight: 600; }
+
+/* ===== Utility headings spacing ===== */
+h2 { font-size: 1.25rem; margin: 0; }

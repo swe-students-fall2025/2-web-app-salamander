@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% block title %}Dashboard · JobTrackr{% endblock %}
+{% block content %}
+<div class="dashboard">
+
+  <form method="get" class="controls">
+    <input type="text" name="q" value="{{ filters.q }}" placeholder="Search company or role">
+    <select name="status">
+      <option value="">All statuses</option>
+      {% for s in ["applied","interview","offer","rejected","accepted"] %}
+        <option value="{{s}}" {% if filters.status==s %}selected{% endif %}>{{s|capitalize}}</option>
+      {% endfor %}
+    </select>
+    <select name="sort">
+      <option value="deadline" {% if filters.sort=="deadline" %}selected{% endif %}>Sort: Deadline</option>
+      <option value="updated"  {% if filters.sort=="updated"  %}selected{% endif %}>Sort: Last Updated</option>
+    </select>
+    <button type="submit">Apply</button>
+    <a class="button" href="{{ url_for('dashboard.index') }}">+ Add Job</a>
+  </form>
+
+  <section class="stats">
+    <div>Total <strong>{{ stats.total or 0 }}</strong></div>
+    <div>Applied <strong>{{ stats.applied or 0 }}</strong></div>
+    <div>Interview <strong>{{ stats.interview or 0 }}</strong></div>
+    <div>Offer <strong>{{ stats.offer or 0 }}</strong></div>
+    <div>Rejected <strong>{{ stats.rejected or 0 }}</strong></div>
+  </section>
+
+  <section class="upcoming">
+    <h2>Upcoming deadlines</h2>
+    {% if upcoming %}
+      <ul>
+        {% for a in upcoming %}
+          <li><strong>{{ a.company }}</strong> — {{ a.role }} · due {{ a.deadline }}</li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p>No upcoming deadlines.</p>
+    {% endif %}
+  </section>
+
+  <section class="list">
+    <h2>All Applications</h2>
+    {% if applications %}
+      <table>
+        <thead><tr><th>Company</th><th>Role</th><th>Status</th><th>Deadline</th><th></th></tr></thead>
+        <tbody>
+        {% for a in applications %}
+          <tr>
+            <td>{{ a.company }}</td>
+            <td>{{ a.role }}</td>
+            <td>{{ a.status|capitalize }}</td>
+            <td>{{ a.deadline or "—" }}</td>
+          </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+
+      <nav class="pager">
+        {% if pager.page > 1 %}
+          <a href="{{ url_for('dashboard.index',
+                              q=filters.q,
+                              status=filters.status,
+                              sort=filters.sort,
+                              page=pager.page-1) }}">Prev</a>
+        {% endif %}
+
+        <span>Page {{ pager.page }} / {{ pager.pages }}</span>
+
+        {% if pager.page < pager.pages %}
+          <a href="{{ url_for('dashboard.index',
+                              q=filters.q,
+                              status=filters.status,
+                              sort=filters.sort,
+                              page=pager.page+1) }}">Next</a>
+        {% endif %}
+      </nav>
+
+    {% else %}
+      <p>No applications in the database yet.</p>
+    {% endif %}
+  </section>
+
+</div>
+{% endblock %}
