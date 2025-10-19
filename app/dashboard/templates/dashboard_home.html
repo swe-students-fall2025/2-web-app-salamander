@@ -44,7 +44,15 @@
     <h2>All Applications</h2>
     {% if applications %}
       <table>
-        <thead><tr><th>Company</th><th>Role</th><th>Status</th><th>Deadline</th><th></th></tr></thead>
+        <thead>
+          <tr>
+            <th>Company</th>
+            <th>Role</th>
+            <th>Status</th>
+            <th>Deadline</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
         <tbody>
         {% for a in applications %}
           <tr>
@@ -52,6 +60,11 @@
             <td>{{ a.role }}</td>
             <td>{{ a.status|capitalize }}</td>
             <td>{{ a.deadline or "—" }}</td>
+            <td>
+              <!-- Temporary placeholder links -->
+              <a href="{{ url_for('dashboard.index') }}" class="text-blue-600 hover:underline mr-3">Edit</a>
+              <a href="{{ url_for('dashboard.index') }}" class="text-red-600 hover:underline">Delete</a>
+            </td>
           </tr>
         {% endfor %}
         </tbody>
