@@ -81,19 +81,27 @@ def add_job():
         role = request.form.get("role")
         status = request.form.get("status")
         deadline = request.form.get("deadline")
+        link = request.form.get("link")
+        notes = request.form.get("notes")
 
         if not company or not role:
             flash("Company and role are required.", "error")
-            return render_template("dashboard/add_job.html")
+            return render_template("add_job.html")
 
         db.applications.insert_one({
-            "user_id": current_user.id,
+            "user_id": ObjectId(current_user.id),
             "company": company,
             "role": role,
             "status": status or "applied",
             "deadline": deadline or None,
+            "link": link or None,
+            "notes": notes or None,
+            "created_at": dt.datetime.utcnow().isoformat(),
+            "updated_at": dt.datetime.utcnow().isoformat(),
+
         })
         flash("Job added successfully!", "info")
         return redirect(url_for("dashboard.index"))
 
     return render_template("add_job.html")
+
