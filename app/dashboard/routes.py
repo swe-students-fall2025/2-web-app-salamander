@@ -4,28 +4,70 @@ from . import dashboard_bp
 from ..db import get_db
 from bson import ObjectId
 import math, datetime as dt
-
 import logging
+
 logger = logging.getLogger(__name__)
 
-
 PAGE_SIZE = 10
+
+def _user_match():
+    return {"$in": [ObjectId(current_user.id), current_user.id]}
 
 @dashboard_bp.get("/")
 @login_required
 def index():
     db = get_db()
-    user_id = ObjectId(current_user.id)
 
-    logger.debug("USER ID %s", user_id)
-
-    # filters
+    # ----- filters -----
     q      = (request.args.get("q") or "").strip()
     status = (request.args.get("status") or "").strip().lower()
-    sort   = request.args.get("sort") or "deadline"
+    sort   = (request.args.get("sort") or "deadline").lower()
     page   = max(int(request.args.get("page") or 1), 1)
+    user_match = _user_match()
 
-    base = {"user_id": user_id}
+    logger.debug("Dashboard: user=%s page=%s q='%s' status=%s sort=%s",
+                 current_user.id, page, q, status, sort)
+
+    # ----- STATS -----
+    pipeline = [
+        {"$match": {"user_id": user_match}},
+        {"$group": {"_id": {"$toLower": "$status"}, "count": {"$sum": 1}}},
+    ]
+    rows = list(db.applications.aggregate(pipeline))
+    raw_counts = { (r["_id"] or "unknown"): r["count"] for r in rows }
+
+    # bucket to keys your template uses
+    stats = {
+        "applied":      raw_counts.get("applied", 0),
+        "interviewing": raw_counts.get("interviewing", 0)
+                        + raw_counts.get("interview", 0),
+        "offer":        raw_counts.get("offer", 0)
+                        + raw_counts.get("offered", 0),
+        "rejected":     raw_counts.get("rejected", 0),
+        "accepted":     raw_counts.get("accepted", 0),
+    }
+    stats["total"] = sum(stats.values())
+
+    logger.debug("Stats raw_counts=%s", raw_counts)
+    logger.debug("Stats bucketed=%s (total=%s)", stats, stats["total"])
+
+    # ----- UPCOMING  -----
+    today = dt.date.today()
+    soon  = today + dt.timedelta(days=14)
+    upcoming = list(
+        db.applications.find(
+            {
+                "user_id": user_match,
+                "deadline": {"$gte": today.isoformat(), "$lte": soon.isoformat()},
+                "status": {"$nin": ["rejected", "accepted"]},
+            },
+            {"company": 1, "role": 1, "deadline": 1},
+        ).sort("deadline", 1).limit(5)
+    )
+    logger.debug("Upcoming count=%d", len(upcoming))
+
+    # ----- MAIN LIST -----
+    base = {"user_id": user_match}
     if status:
         base["status"] = status
     if q:
@@ -34,42 +76,28 @@ def index():
             {"role":    {"$regex": q, "$options": "i"}},
         ]
 
-    # stats
-    pipeline = [
-        {"$match": {"user_id": user_id}},
-        {"$group": {"_id": "$status", "count": {"$sum": 1}}},
-    ]
-    stats_raw = list(db.applications.aggregate(pipeline))
-    stats = {s["_id"] or "unknown": s["count"] for s in stats_raw}
-    stats["total"] = sum(stats.values())
-
-    # upcoming deadlines
-    today = dt.date.today()
-    soon  = today + dt.timedelta(days=14) # upcoming defined as next 14 days
-    upcoming = list(db.applications.find({
-        "user_id": user_id,
-        "deadline": {"$gte": today.isoformat(), "$lte": soon.isoformat()},
-        "status": {"$nin": ["rejected", "accepted"]}
-    }, {"company":1, "role":1, "deadline":1}).sort("deadline", 1).limit(5))
-
-    # main list
     sort_key = [("deadline", 1)] if sort == "deadline" else [("updated_at", -1)]
     total = db.applications.count_documents(base)
-    docs = (db.applications.find(base)
-            .sort(sort_key)
-            .skip((page-1)*PAGE_SIZE)
-            .limit(PAGE_SIZE))
-    
-    logger.debug("FOUND %d documents", total)
+    cursor = (db.applications.find(base)
+              .sort(sort_key)
+              .skip((page - 1) * PAGE_SIZE)
+              .limit(PAGE_SIZE))
+    applications = list(cursor)
+
+    logger.debug("List total=%d page=%d/%d (query=%s)", total, page,
+                 math.ceil(total / PAGE_SIZE) if total else 1, base)
 
     pages = math.ceil(total / PAGE_SIZE) if total else 1
 
-    return render_template("dashboard_home.html",
-                           applications=list(docs),
-                           stats=stats,
-                           upcoming=upcoming,
-                           filters={"q": q, "status": status, "sort": sort},
-                           pager={"page": page, "pages": pages, "size": PAGE_SIZE, "total": total})
+    return render_template(
+        "dashboard_home.html",
+        applications=applications,
+        stats=stats,
+        upcoming=upcoming,
+        filters={"q": q, "status": status, "sort": sort},
+        pager={"page": page, "pages": pages, "size": PAGE_SIZE, "total": total},
+    )
+
 
 @dashboard_bp.route("/add", methods=["GET", "POST"])
 @login_required
@@ -77,23 +105,28 @@ def add_job():
     db = get_db()
 
     if request.method == "POST":
-        company = request.form.get("company")
-        role = request.form.get("role")
-        status = request.form.get("status")
-        deadline = request.form.get("deadline")
+        company  = (request.form.get("company") or "").strip()
+        role     = (request.form.get("role") or "").strip()
+        status   = (request.form.get("status") or "applied").strip().lower()
+        deadline = (request.form.get("deadline") or "").strip()
 
         if not company or not role:
             flash("Company and role are required.", "error")
             return render_template("dashboard/add_job.html")
 
-        db.applications.insert_one({
-            "user_id": current_user.id,
+        doc = {
+            "user_id": ObjectId(current_user.id),
             "company": company,
             "role": role,
-            "status": status or "applied",
+            "status": status,
             "deadline": deadline or None,
-        })
+            "created_at": dt.datetime.utcnow().isoformat(),
+            "updated_at": dt.datetime.utcnow().isoformat(),
+        }
+        res = db.applications.insert_one(doc)
+        logger.debug("Inserted application _id=%s payload=%s", res.inserted_id, doc)
+
         flash("Job added successfully!", "info")
         return redirect(url_for("dashboard.index"))
 
-    return render_template("add_job.html")
+    return render_template("dadd_job.html")

@@ -7,7 +7,7 @@
     <input type="text" name="q" value="{{ filters.q }}" placeholder="Search company or role">
     <select name="status">
       <option value="">All statuses</option>
-      {% for s in ["applied","interview","offer","rejected","accepted"] %}
+      {% for s in ["applied","interviewing","offer","rejected","accepted"] %}
         <option value="{{s}}" {% if filters.status==s %}selected{% endif %}>{{s|capitalize}}</option>
       {% endfor %}
     </select>
@@ -22,7 +22,7 @@
   <section class="stats">
     <div class="stat-total">Total <strong>{{ stats.total or 0 }}</strong></div>
     <div class="stat-applied">Applied <strong>{{ stats.applied or 0 }}</strong></div>
-    <div class="stat-interview">Interview <strong>{{ stats.interview or 0 }}</strong></div>
+    <div class="stat-interview">Interviewing <strong>{{ stats.interviewing or 0 }}</strong></div>
     <div class="stat-offer">Offer <strong>{{ stats.offer or 0 }}</strong></div>
     <div class="stat-rejected">Rejected <strong>{{ stats.rejected or 0 }}</strong></div>
   </section>
