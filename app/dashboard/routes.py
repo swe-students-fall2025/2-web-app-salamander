@@ -129,4 +129,4 @@ def add_job():
         flash("Job added successfully!", "info")
         return redirect(url_for("dashboard.index"))
 
-    return render_template("dadd_job.html")
+    return render_template("add_job.html")
