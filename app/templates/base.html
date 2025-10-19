@@ -27,6 +27,26 @@
     </nav>
   </header>
 
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <ul class="flash w-full max-w-2xl mx-auto mt-4">
+        {% for cat, msg in messages %}
+          <li class="p-3 rounded-md text-center mx-4
+                     {% if cat == 'error' %}
+                       bg-red-100 text-red-700
+                     {% elif cat == 'info' %}
+                       bg-blue-100 text-blue-700
+                     {% else %}
+                       bg-gray-100 text-gray-700
+                     {% endif %}">
+            {{ msg }}
+          </li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+  {% endwith %}
+  <!-- 🔹 End flash section -->
+
   <main class="flex-grow flex items-center justify-center p-6">
     {% block content %}{% endblock %}
   </main>
