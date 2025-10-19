@@ -13,6 +13,18 @@ body {
   min-height: 100vh;
 }
 
+/* ===== Typography improvements ===== */
+html { font-size: 16px; }
+body { line-height: 1.45; }
+
+h1 { font-size: 1.75rem; font-weight: 700; margin-bottom: 0.5rem; }
+h2 { font-size: 1.25rem; font-weight: 700; }
+h3 { font-size: 1rem; font-weight: 600; }
+
+/* slightly increase contrast for paragraph text */
+p, label, td, th { color: #334155; }
+
+
 /* ===== Header ===== */
 .nav {
   display: flex;
