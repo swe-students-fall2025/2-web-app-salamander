@@ -20,8 +20,6 @@ body { line-height: 1.45; }
 h1 { font-size: 1.75rem; font-weight: 700; margin-bottom: 0.5rem; }
 h2 { font-size: 1.25rem; font-weight: 700; }
 h3 { font-size: 1rem; font-weight: 600; }
-
-/* slightly increase contrast for paragraph text */
 p, label, td, th { color: #334155; }
 
 
@@ -120,7 +118,7 @@ button,
   font-size: 1rem;
   font-weight: 500;
   border: none;
-  padding: 0.75rem;
+  padding: 0.65rem 1rem;
   border-radius: 0.5rem;
   cursor: pointer;
   transition: background 0.2s ease;
@@ -128,6 +126,8 @@ button,
 
 button:hover {
   background: #1d4ed8;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 18px rgba(15,23,42,0.08);
 }
 
 /* ===== Text Links ===== */
@@ -269,7 +269,7 @@ p a:hover {
 }
 
 .controls button {
-  padding: 0.6rem 1rem;
+  padding: 0.65rem 1rem;
   border: none;
   border-radius: 10px;
   background: var(--primary);
@@ -279,6 +279,8 @@ p a:hover {
 }
 .controls button:hover {
   background: var(--primary-600);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 22px rgba(15,23,42,0.08);
 }
 
 /* Link styled as button (for + Add Job) */
@@ -294,7 +296,9 @@ p a:hover {
 }
 .controls .button:hover,
 .button:hover {
-  opacity: 0.9;
+  opacity: 0.95;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 18px rgba(15,23,42,0.06);
 }
 
 /* Stack controls on small screens */
@@ -322,6 +326,13 @@ p a:hover {
   padding: 0.9rem 1rem;
   color: var(--muted);
   font-weight: 600;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.12s ease;
+}
+
+.stats > div:hover{
+  transform: translateY(-6px);
+  box-shadow: 0 18px 36px rgba(15,23,42,0.12);
+  border-color: rgba(17,24,39,0.08);
 }
 .stats strong {
   display: block;
@@ -354,9 +365,15 @@ p a:hover {
 .upcoming li {
   padding: 0.5rem 0;
   border-bottom: 1px dashed var(--border);
+  transition: transform 0.14s ease, background 0.14s ease, box-shadow 0.14s ease;
 }
 .upcoming li:last-child {
   border-bottom: 0;
+}
+.upcoming li:hover{
+  transform: translateY(-3px);
+  background: #f8fafc;
+  box-shadow: 0 8px 18px rgba(15,23,42,0.06);
 }
 .upcoming p {
   color: var(--muted);
@@ -397,6 +414,8 @@ tbody td {
 
 tbody tr:hover {
   background: #f9fafb;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 18px rgba(15,23,42,0.04);
 }
 
 td a {
@@ -427,6 +446,14 @@ td a:hover {
 }
 .pager a:hover {
   background: #f3f4f6;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 18px rgba(15,23,42,0.06);
+}
+
+/* small lift for list container when hovered to emphasize card */
+.list:hover{
+  transform: translateY(-4px);
+  box-shadow: 0 18px 36px rgba(15,23,42,0.08);
 }
 
 .pager span {
