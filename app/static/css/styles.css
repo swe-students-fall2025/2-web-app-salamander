@@ -101,13 +101,15 @@ p, label, td, th { color: #334155; }
 }
 
 /* ===== Main Section ===== */
+/* Global page wrapper shouldn't be a centering flexbox */
 main.container {
   flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 2rem;
+  display: block;
+  padding: 1rem;
+  max-width: 1200px;
+  margin: 0 auto;
 }
+
 
 /* ===== Auth Card ===== */
 .auth-card {
@@ -354,12 +356,16 @@ p a:hover {
 @media (max-width: 900px) {
   .controls {
     grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
   }
   .controls button,
   .controls .button {
     grid-column: span 2;
   }
 }
+
+
+
 
 /* ===== Stats row ===== */
 .stats {
