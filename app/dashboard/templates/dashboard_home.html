@@ -16,7 +16,7 @@
       <option value="updated"  {% if filters.sort=="updated"  %}selected{% endif %}>Sort: Last Updated</option>
     </select>
     <button type="submit">Apply</button>
-    <a class="button" href="{{ url_for('dashboard.index') }}">+ Add Job</a>
+    <a class="button" href="{{ url_for('dashboard.add_job') }}">+ Add Job</a>
   </form>
 
   <section class="stats">

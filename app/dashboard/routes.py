@@ -1,4 +1,4 @@
-from flask import request, render_template
+from flask import request, render_template, flash, redirect, url_for
 from flask_login import login_required, current_user
 from . import dashboard_bp
 from ..db import get_db
@@ -70,3 +70,30 @@ def index():
                            upcoming=upcoming,
                            filters={"q": q, "status": status, "sort": sort},
                            pager={"page": page, "pages": pages, "size": PAGE_SIZE, "total": total})
+
+@dashboard_bp.route("/add", methods=["GET", "POST"])
+@login_required
+def add_job():
+    db = get_db()
+
+    if request.method == "POST":
+        company = request.form.get("company")
+        role = request.form.get("role")
+        status = request.form.get("status")
+        deadline = request.form.get("deadline")
+
+        if not company or not role:
+            flash("Company and role are required.", "error")
+            return render_template("dashboard/add_job.html")
+
+        db.applications.insert_one({
+            "user_id": current_user.id,
+            "company": company,
+            "role": role,
+            "status": status or "applied",
+            "deadline": deadline or None,
+        })
+        flash("Job added successfully!", "info")
+        return redirect(url_for("dashboard.index"))
+
+    return render_template("add_job.html")
