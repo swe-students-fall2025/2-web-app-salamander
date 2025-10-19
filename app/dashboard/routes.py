@@ -142,7 +142,13 @@ def delete_job(job_id):
         flash("Invalid job ID.", "error")
         return redirect(url_for("dashboard.index"))
 
-    query = {"_id": job_oid, "user_id": {"$in": [ObjectId(current_user.id), current_user.id]}}
+    user_match = {"$in": [ObjectId(current_user.id), current_user.id]}
+    query = {
+        "$and": [
+            {"user_id": user_match},
+            {"$or": [{"_id": job_oid}, {"_id": str(job_id)}]}
+        ]
+    }
     result = db.applications.delete_one(query)
 
     if result.deleted_count > 0:
