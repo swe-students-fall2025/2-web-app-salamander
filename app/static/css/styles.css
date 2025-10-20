@@ -177,6 +177,13 @@ main.container {
   margin: 0 auto;
 }
 
+/* Ensure main without container class uses flexbox for centering */
+main {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 /* ===== Auth Card ===== */
 .auth-card {
   width: 100%;
@@ -239,6 +246,8 @@ button,
   border-radius: 0.5rem;
   cursor: pointer;
   transition: background 0.2s ease;
+  text-align: center;
+  display: inline-block;
 }
 
 button:hover {
@@ -468,6 +477,7 @@ p a:hover {
   color: #fff;
   text-decoration: none;
   font-weight: 600;
+  text-align: center;
 }
 .controls .button:hover,
 .button:hover {
@@ -485,6 +495,20 @@ p a:hover {
   .controls button,
   .controls .button {
     grid-column: span 2;
+  }
+}
+
+@media (max-width: 600px) {
+  .controls {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+  .controls input[type="text"],
+  .controls select,
+  .controls button,
+  .controls .button {
+    grid-column: 1;
+    width: 100%;
   }
 }
 
@@ -575,6 +599,17 @@ p a:hover {
 @media (max-width: 900px) {
   .stats {
     grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .stats {
+    grid-template-columns: 1fr;
+  }
+
+  .dashboard {
+    margin: 1rem auto;
+    padding: 0 0.5rem;
   }
 }
 
@@ -697,4 +732,109 @@ td a:hover {
 h2 {
   font-size: 1.25rem;
   margin: 0;
+}
+
+/* ===== Mobile Table Responsive ===== */
+@media (max-width: 768px) {
+  .list {
+    padding: 0.75rem;
+    overflow-x: auto;
+  }
+
+  table {
+    font-size: 0.85rem;
+    min-width: 600px;
+  }
+
+  thead th,
+  tbody td {
+    padding: 0.5rem 0.3rem;
+    white-space: nowrap;
+  }
+
+  tbody tr:hover {
+    transform: none;
+  }
+
+  .list:hover {
+    transform: none;
+  }
+}
+
+@media (max-width: 600px) {
+  /* Hide table and show card layout on mobile */
+  .list table {
+    display: none;
+  }
+
+  .list .mobile-cards {
+    display: block;
+  }
+}
+
+/* Mobile card layout for applications */
+.mobile-cards {
+  display: none;
+}
+
+.mobile-card {
+  background: #f9fafb;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.mobile-card:last-child {
+  margin-bottom: 0;
+}
+
+.mobile-card-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px dashed var(--border);
+}
+
+.mobile-card-row:last-child {
+  margin-bottom: 0;
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.mobile-card-label {
+  font-weight: 600;
+  color: #6b7280;
+  font-size: 0.85rem;
+}
+
+.mobile-card-value {
+  color: #111827;
+  font-weight: 500;
+  text-align: right;
+}
+
+.mobile-card-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--border);
+}
+
+.mobile-card-actions a {
+  color: var(--primary);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.mobile-card-actions a:hover {
+  text-decoration: underline;
+}
+
+.mobile-card-actions a.delete-link {
+  color: #dc2626;
 }
