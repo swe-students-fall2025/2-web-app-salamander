@@ -52,9 +52,10 @@ def signup_post():
     if err:
         flash(err, "error")
         return redirect(url_for("auth.signup", next=request.form.get("next")))
-
+    
+    flash("Your Account has been successfully created", "info")
     login_user(user, remember=True)
-    return _redirect_next_or("profile.index")
+    return _redirect_next_or("auth.login")
 
 @auth_bp.post("/logout")
 @login_required
