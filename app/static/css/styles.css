@@ -763,14 +763,14 @@ h2 {
 
 @media (max-width: 600px) {
   .list {
-    overflow-x: hidden;   /* stop the horizontal scroll */
+    overflow-x: hidden;
     padding: 0.75rem 0.5rem;
   }
 
   table {
-    width: 100%;          /* make it stretch to container width */
-    min-width: unset;     /* override earlier min-width: 600px; */
-    table-layout: fixed;  /* equal column widths */
+    width: 100%;
+    min-width: unset;   
+    table-layout: fixed; 
     word-wrap: break-word;
   }
 
@@ -778,7 +778,7 @@ h2 {
   tbody td {
     font-size: 0.85rem;
     padding: 0.4rem 0.3rem;
-    white-space: normal;  /* allow wrapping of text */
+    white-space: normal; 
     text-align: left;
   }
 
@@ -787,8 +787,7 @@ h2 {
     box-shadow: none;
   }
 
-  /* optional: hide less important columns if space is too tight */
-  td:nth-child(4),  /* Deadline */
+  td:nth-child(4), 
   th:nth-child(4) {
     display: none;
   }
