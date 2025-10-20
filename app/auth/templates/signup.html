@@ -3,6 +3,17 @@
 {% block content %}
 <div class="auth-card">
   <h1>Create account</h1>
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+  <ul class="flash">
+    {% for cat, msg in messages %}
+    <li class="{{ cat }}">{{ msg }}</li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+  {% endwith %}
+  
   <form method="post" action="{{ url_for('auth.signup_post') }}">
     <label>Email
       <input type="email" name="email" required>

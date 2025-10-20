@@ -4,6 +4,7 @@ from . import stats_bp
 from ..db import get_db
 from datetime import datetime, timedelta
 from collections import Counter
+from bson import ObjectId 
 
 
 def to_naive_datetime(dt):
@@ -20,7 +21,9 @@ def to_naive_datetime(dt):
 @login_required
 def index():
     db = get_db()
-    applications = list(db.applications.find({"user_id": current_user.id}))
+    applications = list(db.applications.find({
+        "user_id": {"$in": [ObjectId(current_user.id), current_user.id]}
+    }))
     total_apps = len(applications)
     now = datetime.now()
 

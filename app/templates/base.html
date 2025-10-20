@@ -12,20 +12,23 @@
 </head>
 
 <body class="bg-gray-100 min-h-screen flex flex-col">
-  <header class="bg-white shadow-md py-4 px-6 flex justify-between items-center">
-    <a href="{{ url_for('dashboard.index') }}" class="text-2xl font-bold text-blue-600">JobTrackr</a>
-    <nav class="space-x-4">
-      {% if current_user.is_authenticated %}
-      <a href="{{ url_for('profile.index') }}" class="text-gray-700 hover:text-blue-600">Profile</a>
-      <a href="{{ url_for('stats.index') }}" class="text-gray-700 hover:text-blue-600">Stats</a>
-      <form method="post" action="{{ url_for('auth.logout') }}" class="inline">
-        <button type="submit" class="text-gray-700 hover:text-red-500">Logout</button>
-      </form>
-      {% else %}
-      <a href="{{ url_for('auth.login') }}" class="text-gray-700 hover:text-blue-600">Login</a>
-      {% endif %}
-    </nav>
+  <header class="navbar">
+    <div class="navbar-container">
+      <a href="{{ url_for('dashboard.index') }}" class="navbar-brand">JobTrackr</a>
+      <nav class="navbar-nav">
+        {% if current_user.is_authenticated %}
+        <a href="{{ url_for('profile.index') }}" class="nav-link">Profile</a>
+        <a href="{{ url_for('stats.index') }}" class="nav-link">Stats</a>
+        <form method="post" action="{{ url_for('auth.logout') }}" class="logout-form">
+          <button type="submit" class="nav-link logout-btn">Logout</button>
+        </form>
+        {% else %}
+        <a href="{{ url_for('auth.login') }}" class="nav-link">Login</a>
+        {% endif %}
+      </nav>
+    </div>
   </header>
+  <!-- 🔹 End flash section -->
 
   <main class="flex-grow flex items-center justify-center p-6">
     {% block content %}{% endblock %}
