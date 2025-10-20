@@ -27,7 +27,6 @@
 </style>
 
 <div class="dashboard">
-
   <form method="get" class="controls">
     <input type="text" name="q" value="{{ filters.q }}" placeholder="Search company or role">
     <select name="status">
@@ -94,7 +93,9 @@
 
                 <select name="status" onchange="this.form.submit()">
                   {% for s in ['applied','interviewing','offer','rejected'] %}
-                    <option value="{{s}}" {% if s_norm == s %}selected{% endif %}>{{ s|capitalize }}</option>
+                    <option value="{{s}}" {% if s_norm == s %}selected{% endif %}>
+                      {% if s == 'interviewing' %}Interview{% else %}{{ s|capitalize }}{% endif %}
+                    </option>
                   {% endfor %}
                 </select>
               </form>
