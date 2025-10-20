@@ -762,15 +762,37 @@ h2 {
 }
 
 @media (max-width: 600px) {
-  /* Hide table and show card layout on mobile */
-  .list table {
-    display: none;
+  .list {
+    overflow-x: hidden;
+    padding: 0.75rem 0.5rem;
   }
 
-  .list .mobile-cards {
-    display: block;
+  table {
+    width: 100%;
+    min-width: unset;   
+    table-layout: fixed; 
+    word-wrap: break-word;
+  }
+
+  thead th,
+  tbody td {
+    font-size: 0.85rem;
+    padding: 0.4rem 0.3rem;
+    white-space: normal; 
+    text-align: left;
+  }
+
+  tbody tr:hover {
+    transform: none;
+    box-shadow: none;
+  }
+
+  td:nth-child(4), 
+  th:nth-child(4) {
+    display: none;
   }
 }
+
 
 /* Mobile card layout for applications */
 .mobile-cards {
