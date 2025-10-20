@@ -30,8 +30,20 @@
   </header>
   <!-- 🔹 End flash section -->
 
-  <main class="flex-grow flex items-center justify-center p-6">
-    {% block content %}{% endblock %}
+  <main class="flex-grow flex items-center justify-center p-6 flex-col">
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <div class="flash-wrap w-full max-w-3xl mb-4">
+        <ul class="flash">
+          {% for cat, msg in messages %}
+            <li class="{{ cat }}">{{ msg }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+    {% endif %}
+  {% endwith %}
+
+  {% block content %}{% endblock %}
   </main>
 </body>
 
