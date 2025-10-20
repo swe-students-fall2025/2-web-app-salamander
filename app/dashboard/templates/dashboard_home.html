@@ -81,6 +81,7 @@
       <tbody>
         {% for a in applications %}
           {% set s_norm = (a.status or 'applied')|lower %}
+          {% if s_norm == 'interview' %}{% set s_norm = 'interviewing' %}{% endif %}
           <tr>
             <td>{{ a.company }}</td>
             <td>{{ a.role }}</td>
@@ -92,7 +93,7 @@
                 <input type="hidden" name="page" value="{{ pager.page }}">
 
                 <select name="status" onchange="this.form.submit()">
-                  {% for s in ['applied','interview','offer','rejected'] %}
+                  {% for s in ['applied','interviewing','offer','rejected'] %}
                     <option value="{{s}}" {% if s_norm == s %}selected{% endif %}>{{ s|capitalize }}</option>
                   {% endfor %}
                 </select>
