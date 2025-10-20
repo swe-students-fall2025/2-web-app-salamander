@@ -762,15 +762,38 @@ h2 {
 }
 
 @media (max-width: 600px) {
-  /* Hide table and show card layout on mobile */
-  .list table {
-    display: none;
+  .list {
+    overflow-x: hidden;   /* stop the horizontal scroll */
+    padding: 0.75rem 0.5rem;
   }
 
-  .list .mobile-cards {
-    display: block;
+  table {
+    width: 100%;          /* make it stretch to container width */
+    min-width: unset;     /* override earlier min-width: 600px; */
+    table-layout: fixed;  /* equal column widths */
+    word-wrap: break-word;
+  }
+
+  thead th,
+  tbody td {
+    font-size: 0.85rem;
+    padding: 0.4rem 0.3rem;
+    white-space: normal;  /* allow wrapping of text */
+    text-align: left;
+  }
+
+  tbody tr:hover {
+    transform: none;
+    box-shadow: none;
+  }
+
+  /* optional: hide less important columns if space is too tight */
+  td:nth-child(4),  /* Deadline */
+  th:nth-child(4) {
+    display: none;
   }
 }
+
 
 /* Mobile card layout for applications */
 .mobile-cards {
