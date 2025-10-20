@@ -13,7 +13,6 @@ As a student, I want to track my job applications so I can organize deadlines an
 - As a user, I want to stay logged in after closing the tab so that I don’t have to re-enter my credentials every time.
 - As a user, I want to log out securely so that others cannot access my data on shared devices.
 - As a user, I want to receive clear error messages if login or signup fails so that I know what went wrong (e.g., invalid password or existing email).
-- As a user, I want to reset my password so that I can regain access if I forget it. (Tentative)
 
 ### Interface
 
