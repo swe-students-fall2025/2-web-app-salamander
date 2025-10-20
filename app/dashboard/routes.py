@@ -84,6 +84,11 @@ def index():
               .limit(PAGE_SIZE))
     applications = list(cursor)
 
+    # stringify _id for templates (prevents ObjectId(...) rendering in URLs)
+    for d in applications:
+        if d.get("_id") is not None:
+            d["_id"] = str(d["_id"])
+
     logger.debug("List total=%d page=%d/%d (query=%s)", total, page,
                  math.ceil(total / PAGE_SIZE) if total else 1, base)
 
@@ -130,6 +135,64 @@ def add_job():
         return redirect(url_for("dashboard.index"))
 
     return render_template("add_job.html")
+
+
+@dashboard_bp.route("/<job_id>/edit", methods=["GET", "POST"])
+@login_required
+def edit_job(job_id):
+    db = get_db()
+    user_match = _user_match()
+
+    try:
+        job_oid = ObjectId(job_id)
+    except Exception:
+        job_oid = None
+
+    query = {
+        "$and": [
+            {"user_id": user_match},
+            {"$or": [{"_id": job_oid} if job_oid is not None else {"_id": job_id}, {"_id": job_id}]}
+        ]
+    }
+
+    job = db.applications.find_one(query)
+    if not job:
+        flash("Job not found or unauthorized.", "error")
+        return redirect(url_for("dashboard.index"))
+
+    if request.method == "POST":
+        company  = (request.form.get("company") or "").strip()
+        role     = (request.form.get("role") or "").strip()
+        status   = (request.form.get("status") or "applied").strip().lower()
+        deadline = (request.form.get("deadline") or "").strip()
+        link     = (request.form.get("link") or "").strip()
+        notes    = (request.form.get("notes") or "").strip()
+
+        if not company or not role:
+            flash("Company and role are required.", "error")
+            return render_template("add_job.html", job=job)
+
+        update = {
+            "company": company,
+            "role": role,
+            "status": status,
+            "deadline": deadline or None,
+            "link": link or None,
+            "notes": notes or None,
+            "updated_at": dt.datetime.utcnow().isoformat(),
+        }
+
+        filter_q = {"_id": job.get("_id"), "user_id": user_match}
+        logger.debug("Updating job filter=%s update=%s", filter_q, update)
+        res = db.applications.update_one(filter_q, {"$set": update})
+        logger.debug("Update result: matched=%s modified=%s raw=%s", getattr(res, 'matched_count', None), getattr(res, 'modified_count', None), res.raw_result if hasattr(res, 'raw_result') else None)
+        if res.matched_count:
+            flash("Job updated successfully!", "info")
+        else:
+            flash("Job not found or not authorized to update.", "error")
+        return redirect(url_for("dashboard.index"))
+    
+    return render_template("add_job.html", job=job)
 
 @dashboard_bp.post("/delete/<job_id>")
 @login_required

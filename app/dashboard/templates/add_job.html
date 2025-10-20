@@ -2,30 +2,30 @@
 {% block title %}Add Job · JobTrackr{% endblock %}
 {% block content %}
 <div class="auth-card">
-  <h1>Add a New Job</h1>
-  <form method="POST">
+  <h1>{% if job %}Edit Job{% else %}Add a New Job{% endif %}</h1>
+  <form method="POST" {% if not job %}action="{{ url_for('dashboard.add_job') }}"{% endif %}>
     <label>Company
-      <input type="text" name="company" placeholder="Company name" required>
+      <input type="text" name="company" placeholder="Company name" required value="{{ job.get('company') if job }}">
     </label>
     <label>Role
-      <input type="text" name="role" placeholder="Job title" required>
+      <input type="text" name="role" placeholder="Job title" required value="{{ job.get('role') if job }}">
     </label>
     <label>Status
       <select name="status">
-        <option value="applied">Applied</option>
-        <option value="interview">Interview</option>
-        <option value="offer">Offer</option>
-        <option value="rejected">Rejected</option>
+        <option value="applied" {% if job and job.get('status') == 'applied' %}selected{% endif %}>Applied</option>
+        <option value="interview" {% if job and job.get('status') in ['interview', 'interviewing'] %}selected{% endif %}>Interview</option>
+        <option value="offer" {% if job and job.get('status') in ['offer', 'offered'] %}selected{% endif %}>Offer</option>
+        <option value="rejected" {% if job and job.get('status') == 'rejected' %}selected{% endif %}>Rejected</option>
       </select>
     </label>
     <label>Deadline
-      <input type="date" name="deadline">
+      <input type="date" name="deadline" value="{{ job.get('deadline') if job and job.get('deadline') }}">
     </label>
     <label>Link
-      <input type="url" name="link" placeholder="https://example.com/job-link">
+      <input type="url" name="link" placeholder="https://example.com/job-link" value="{{ job.get('link') if job and job.get('link') }}">
     </label>
     <label>Notes
-      <textarea name="notes" rows="3" placeholder="Optional notes..."></textarea>
+      <textarea name="notes" rows="3" placeholder="Optional notes...">{{ job.get('notes') if job and job.get('notes') }}</textarea>
     </label>
     <button type="submit">Save Job</button>
   </form>
