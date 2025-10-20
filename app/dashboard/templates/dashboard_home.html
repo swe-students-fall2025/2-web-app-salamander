@@ -91,16 +91,11 @@
                 <input type="hidden" name="sort" value="{{ filters.sort }}">
                 <input type="hidden" name="page" value="{{ pager.page }}">
 
-                <fieldset class="segmented" onchange="this.closest('form').submit()" aria-label="Change status">
-                  <input id="s-applied-{{ loop.index0 }}" type="radio" name="status" value="applied" {{ 'checked' if s_norm=='applied' else '' }}>
-                  <label for="s-applied-{{ loop.index0 }}" data-val="applied"><span class="dot"></span>Applied</label>
-                  <input id="s-interview-{{ loop.index0 }}" type="radio" name="status" value="interview" {{ 'checked' if s_norm=='interview' else '' }}>
-                  <label for="s-interview-{{ loop.index0 }}" data-val="interview"><span class="dot"></span>Interview</label>
-                  <input id="s-offer-{{ loop.index0 }}" type="radio" name="status" value="offer" {{ 'checked' if s_norm=='offer' else '' }}>
-                  <label for="s-offer-{{ loop.index0 }}" data-val="offer"><span class="dot"></span>Offer</label>
-                  <input id="s-rejected-{{ loop.index0 }}" type="radio" name="status" value="rejected" {{ 'checked' if s_norm=='rejected' else '' }}>
-                  <label for="s-rejected-{{ loop.index0 }}" data-val="rejected"><span class="dot"></span>Rejected</label>
-                </fieldset>
+                <select name="status" onchange="this.form.submit()">
+                  {% for s in ['applied','interview','offer','rejected'] %}
+                    <option value="{{s}}" {% if s_norm == s %}selected{% endif %}>{{ s|capitalize }}</option>
+                  {% endfor %}
+                </select>
               </form>
             </td>
             <td>{{ a.deadline or "—" }}</td>
