@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+{% block title %}Edit Job · JobTrackr{% endblock %}
+{% block content %}
+
+{% set j = job if job is defined and job else {} %}
+
+<style>
+  :root{ --brand:#2050E0; --fg:#111827; --muted:#6b7280; --line:#f0f0f0; }
+  .wrap{ max-width:820px; margin:24px auto; background:#fff; border-radius:16px; box-shadow:0 8px 28px rgba(0,0,0,.08); padding:24px; }
+  .title{ font-size:22px; font-weight:800; margin:0 0 8px; color:var(--fg); }
+  .sub{ color:var(--muted); margin-bottom:16px; }
+  .grid{ display:grid; grid-template-columns:1fr 1fr; gap:14px 24px; align-items:start; }
+  @media (max-width: 720px){ .grid{ grid-template-columns:1fr; } }
+  .field{ display:flex; flex-direction:column; gap:6px; }
+  .field label{ font-size:14px; font-weight:600; color:#374151; }
+  .hint{ font-size:12px; color:#6b7280; }
+  .field input, .field select, .field textarea{
+    border:1px solid #e5e7eb; border-radius:10px; padding:10px 12px; font-size:14px; outline:none; width:100%;
+  }
+  .field textarea{ min-height:120px; resize:vertical; }
+  .full{ grid-column:1 / -1; }
+  .row{ display:flex; gap:10px; justify-content:flex-end; margin-top:8px; }
+  .btn{ padding:10px 14px; border-radius:10px; font-weight:700; font-size:14px; border:1px solid transparent; cursor:pointer; }
+  .btn-primary{ background:#2050E0; color:#fff; }
+  .btn-secondary{ background:#fff; color:var(--fg); border-color:#e5e7eb; }
+</style>
+
+<div class="wrap">
+  <h1 class="title">Edit Job</h1>
+  <div class="sub">Update your application details.</div>
+
+  <form method="POST">
+    <div class="grid">
+      <!-- Company -->
+      <div class="field">
+        <label>Company</label>
+        <input type="text" name="company" value="{{ j.get('company','') }}" placeholder="Company name" required>
+      </div>
+
+      <!-- Role -->
+      <div class="field">
+        <label>Role</label>
+        <input type="text" name="role" value="{{ j.get('role','') }}" placeholder="Job title" required>
+      </div>
+
+      <!-- Status -->
+      <div class="field">
+        <label>Status</label>
+        {% set s = (j.get('status','applied')|string|lower) %}
+        <select name="status">
+          <option value="applied"      {{ 'selected' if s=='applied' else '' }}>Applied</option>
+          <option value="interviewing" {{ 'selected' if s=='interviewing' else '' }}>Interviewing</option>
+          <option value="offer"        {{ 'selected' if s=='offer' else '' }}>Offer</option>
+          <option value="rejected"     {{ 'selected' if s=='rejected' else '' }}>Rejected</option>
+        </select>
+      </div>
+
+      <!-- Deadline -->
+      <div class="field">
+        <label>Deadline</label>
+        <input type="text" name="deadline"
+               value="{{ j.get('deadline','') }}"
+               placeholder="yyyy/mm/dd">
+        <div class="hint">Format: yyyy/mm/dd</div>
+      </div>
+
+      <!-- Link -->
+      <div class="field full">
+        <label>Link</label>
+        <input type="url" name="link"
+               value="{{ j.get('link','') }}"
+               placeholder="https://example.com/job-link" />
+      </div>
+
+      <!-- Notes -->
+      <div class="field full">
+        <label>Notes</label>
+        <textarea name="notes" placeholder="Interviewers, referral, OA due date, follow-ups...">{{ j.get('notes','') }}</textarea>
+      </div>
+
+      <!-- Actions -->
+      <div class="full row">
+        <a class="btn btn-secondary" href="{{ url_for('dashboard.index') }}">Cancel</a>
+        <button class="btn btn-primary" type="submit">Save Changes</button>
+      </div>
+    </div>
+  </form>
+</div>
+
+{% endblock %}

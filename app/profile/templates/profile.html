@@ -2,57 +2,136 @@
 {% block title %}Profile · JobTrackr{% endblock %}
 {% block content %}
 
-<div class="profile-container">
-  <h1>Your Profile</h1>
+<style>
+  :root{
+    --brand:#2050E0;
+    --fg:#111827;
+    --muted:#6b7280;
+    --line:#f0f0f0;
+    --card-bg:#fff;
+  }
+    .profile-page{ display:flex; justify-content:center; padding:24px 16px; }
+    .profile-card{
+      width:100%; max-width:900px; background:var(--card-bg);
+      border-radius:16px; box-shadow:0 8px 28px rgba(0,0,0,.08); padding:24px;
+    }
+    .profile-header{
+      display:flex; flex-direction:column; align-items:center; gap:12px; margin-bottom:16px; text-align:center;
+    }
+    .profile-avatar{
+      width:120px; height:120px; border-radius:999px; object-fit:cover; border:2px solid #eee; background:#fafafa;
+    }
+    .profile-title{ font-size:28px; font-weight:800; letter-spacing:.2px; margin:0; color:var(--fg); }
+    .profile-subtle{ color:var(--muted); font-size:14px; margin-top:2px; }
+    .profile-sep{ height:1px; background:var(--line); margin:16px 0; }
 
-  {% if not name and not grad_term %}
-  <p style="margin-bottom: 2rem;">No profile details yet — click below to add them!</p>
-  {% endif %}
+  .profile-form, .profile-meta{
+    display:flex; flex-direction:column; gap:18px;
+  }
 
-  <form method="POST" id="profile-form" class="profile-form" style="display:none;">
-    <div class="profile-field">
-      <label>Email</label>
-      <input type="text" name="email" value="{{ email }}" readonly>
-    </div>
-    <div class="profile-field">
-      <label>Name</label>
-      <input type="text" name="name" value="{{ name }}" placeholder="Add your name..." />
-    </div>
-    <div class="profile-field">
-      <label>Graduation Term</label>
-      <input type="text" name="graduation_term" value="{{ grad_term }}" placeholder="e.g. Spring 2026" />
-    </div>
-    <button class="profile-save-btn" type="submit">Save Changes</button>
-  </form>
+  .profile-field{ display:flex; flex-direction:column; gap:6px; width:100%; }
+  .profile-field label{ font-weight:600; font-size:14px; color:#374151; text-align:left; }
+  .profile-field input[type="text"],
+  .profile-field input[type="file"],
+  .profile-field textarea{
+    width:100%; border:1px solid #e5e7eb; border-radius:10px; padding:10px 12px; font-size:14px; outline:none;
+  }
+  .profile-field textarea{ resize:vertical; min-height:100px; }
 
-  <div id="profile-view">
-    <div class="profile-field-view">
-      <label>Email</label>
-      <p>{{ email }}</p>
+  .btn-row{ display:flex; gap:10px; justify-content:flex-end; margin-top:12px; }
+  .btn{ padding:10px 14px; border-radius:10px; font-weight:700; font-size:14px; border:1px solid transparent; cursor:pointer; }
+  .btn-primary{ background:var(--brand); color:#fff; }
+  .btn-secondary{ background:#fff; color:var(--fg); border-color:#e5e7eb; }
+
+  .edit-btn-area{ display:flex; justify-content:center; margin-top:20px; }
+</style>
+
+<div class="profile-page">
+  <div class="profile-card">
+
+    <!-- Header -->
+    <div class="profile-header">
+      {% if profile_photo %}
+        <img class="profile-avatar" src="{{ profile_photo }}" alt="Profile photo">
+      {% else %}
+        <img class="profile-avatar" src="https://ui-avatars.com/api/?name={{ (name or 'User')|urlencode }}&background=f3f4f6&color=111827&size=240" alt="Profile photo">
+      {% endif %}
+      <h1 class="profile-title">Your Profile</h1>
     </div>
-    <div class="profile-field-view">
-      <label>Name</label>
-      <p>{{ name or "—" }}</p>
+
+    {% if not name and not phone and not introduction %}
+      <p style="margin-bottom: 8px; text-align:center; color:var(--muted);">
+        No profile details yet — click “Edit Profile” to add them!
+      </p>
+    {% endif %}
+
+    <div class="profile-sep"></div>
+
+    <form method="POST" id="profile-form" class="profile-form" style="display:none;" enctype="multipart/form-data">
+      <div class="profile-field">
+        <label>Email</label>
+        <input type="text" name="email" value="{{ email }}" readonly>
+      </div>
+
+      <div class="profile-field">
+        <label>Name</label>
+        <input type="text" name="name" value="{{ name }}" placeholder="Add your name..." />
+      </div>
+
+      <div class="profile-field">
+        <label>Phone</label>
+        <input type="text" name="phone" value="{{ phone or '' }}" placeholder="+1 555 123 4567">
+      </div>
+
+      <div class="profile-field">
+        <label>Profile Photo (upload)</label>
+        <input type="file" name="profile_photo" accept="image/*">
+      </div>
+
+      <div class="profile-field">
+        <label>Introduction</label>
+        <textarea name="introduction" placeholder="Tell us a bit about yourself...">{{ introduction or '' }}</textarea>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-secondary" type="button" onclick="toggleEdit(false)">Cancel</button>
+        <button class="btn btn-primary" type="submit">Save Changes</button>
+      </div>
+    </form>
+
+    <div id="profile-view" class="profile-meta">
+      <p><strong>Email:</strong> {{ email }}</p>
+      <p><strong>Name:</strong> {{ name or "—" }}</p>
+      <p><strong>Phone:</strong> {{ phone or "—" }}</p>
+
+      <div>
+        <p style="margin:0 0 6px 0; text-align:center;"><strong>Introduction:</strong></p>
+        {% if introduction %}
+          <div style="white-space:pre-wrap; color:#374151; text-align:center;">{{ introduction }}</div>
+        {% else %}
+          <div style="text-align:center;">—</div>
+        {% endif %}
+      </div>
+
+      <div class="edit-btn-area">
+        <button class="btn btn-primary" onclick="toggleEdit(true)">Edit Profile</button>
+      </div>
     </div>
-    <div class="profile-field-view">
-      <label>Graduation Term</label>
-      <p>{{ grad_term or "—" }}</p>
-    </div>
-    <button class="profile-save-btn" onclick="toggleEdit(true)">Edit Profile</button>
+
   </div>
 </div>
 
 <script>
-  function toggleEdit(editMode) {
-    const form = document.getElementById("profile-form");
-    const view = document.getElementById("profile-view");
-    if (editMode) {
-      form.style.display = "block";
-      view.style.display = "none";
-    } else {
-      form.style.display = "none";
-      view.style.display = "block";
-    }
+function toggleEdit(editMode) {
+  const form = document.getElementById("profile-form");
+  const view = document.getElementById("profile-view");
+  if (editMode) {
+    form.style.display = "flex";
+    view.style.display = "none";
+  } else {
+    form.reset();
+    form.style.display = "none";
+    view.style.display = "flex";
   }
 </script>
 

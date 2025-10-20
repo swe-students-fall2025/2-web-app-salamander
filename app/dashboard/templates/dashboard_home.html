@@ -1,6 +1,31 @@
 {% extends "base.html" %}
 {% block title %}Dashboard · JobTrackr{% endblock %}
 {% block content %}
+
+<style>
+  .segmented {
+    display: inline-flex; gap: 6px; align-items: center;
+    padding: 4px; border: 1px solid #e5e7eb; border-radius: 9999px; background: #fff;
+  }
+  .segmented input[type="radio"] { position: absolute; opacity: 0; pointer-events: none; }
+  .segmented label {
+    font: 600 12px/1.2 system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+    padding: 6px 10px; border-radius: 9999px; cursor: pointer; user-select: none;
+    border: 1px solid transparent; transition: all .15s ease;
+    color: #374151; background: #f8fafc;
+  }
+  .segmented label:hover { filter: brightness(0.97); }
+  .segmented input:checked + label[data-val="applied"]   { background:#eef2ff; color:#3730a3; border-color:#c7d2fe; }
+  .segmented input:checked + label[data-val="interview"] { background:#FFF7ED; color:#9A3412; border-color:#FED7AA; }
+  .segmented input:checked + label[data-val="offer"]     { background:#ecfdf5; color:#065f46; border-color:#a7f3d0; }
+  .segmented input:checked + label[data-val="rejected"]  { background:#fef2f2; color:#991b1b; border-color:#fecaca; }
+  .segmented label .dot { display:inline-block; width:6px; height:6px; border-radius:9999px; margin-right:6px; }
+  .segmented label[data-val="applied"]   .dot { background:#6366f1; }
+  .segmented label[data-val="interview"] .dot { background:#F59E0B; }
+  .segmented label[data-val="offer"]     .dot { background:#10b981; }
+  .segmented label[data-val="rejected"]  .dot { background:#ef4444; }
+</style>
+
 <div class="dashboard">
 
   <form method="get" class="controls">
@@ -54,26 +79,40 @@
         </tr>
       </thead>
       <tbody>
-      {% for a in applications %}
-        <tr>
-          <td>{{ a.company }}</td>
-          <td>{{ a.role }}</td>
-          <td>{{ a.status|capitalize }}</td>
-          <td>{{ a.deadline or "—" }}</td>
-          <td>
-            <a href="{{ url_for('dashboard.edit_job', job_id=a._id) }}" class="text-blue-600 hover:underline mr-3">Edit</a>
+        {% for a in applications %}
+          {% set s_norm = (a.status or 'applied')|lower %}
+          {% if s_norm == 'interview' %}{% set s_norm = 'interviewing' %}{% endif %}
+          <tr>
+            <td>{{ a.company }}</td>
+            <td>{{ a.role }}</td>
+            <td>
+              <form method="POST" action="{{ url_for('dashboard.update_status', job_id=(a._id|string)) }}">
+                <input type="hidden" name="q" value="{{ filters.q }}">
+                <input type="hidden" name="current_filter_status" value="{{ filters.status }}">
+                <input type="hidden" name="sort" value="{{ filters.sort }}">
+                <input type="hidden" name="page" value="{{ pager.page }}">
 
-            <form action="{{ url_for('dashboard.delete_job', job_id=a._id) }}" method="post" style="display:inline;">
-              <button type="submit"
-                      onclick="return confirm('Are you sure you want to delete this job?');"
-                      class="text-red-600 hover:underline bg-transparent border-none cursor-pointer">
-                Delete
-              </button>
-            </form>
-          </td>
-        </tr>
-      {% endfor %}
-    </tbody>
+                <select name="status" onchange="this.form.submit()">
+                  {% for s in ['applied','interviewing','offer','rejected'] %}
+                    <option value="{{s}}" {% if s_norm == s %}selected{% endif %}>{{ s|capitalize }}</option>
+                  {% endfor %}
+                </select>
+              </form>
+            </td>
+            <td>{{ a.deadline or "—" }}</td>
+            <td>
+              <a href="{{ url_for('dashboard.edit_job', job_id=(a._id|string)) }}" class="text-blue-600 hover:underline mr-3">Edit</a>
+              <form action="{{ url_for('dashboard.delete_job', job_id=(a._id|string)) }}" method="post" style="display:inline;">
+                <button type="submit"
+                        onclick="return confirm('Are you sure you want to delete this job?');"
+                        class="text-red-600 hover:underline bg-transparent border-none cursor-pointer">
+                  Delete
+                </button>
+              </form>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
     </table>
 
     <nav class="pager">
@@ -87,12 +126,13 @@
 
       <span>Page {{ pager.page }} / {{ pager.pages }}</span>
 
-      {% if pager.page < pager.pages %} <a href="{{ url_for('dashboard.index',
+      {% if pager.page < pager.pages %}
+      <a href="{{ url_for('dashboard.index',
                               q=filters.q,
                               status=filters.status,
                               sort=filters.sort,
                               page=pager.page+1) }}">Next</a>
-        {% endif %}
+      {% endif %}
     </nav>
 
     {% else %}

@@ -220,3 +220,113 @@ def delete_job(job_id):
         flash("Job not found or unauthorized.", "error")
 
     return redirect(url_for("dashboard.index"))
+
+@dashboard_bp.route("/edit/<job_id>", methods=["GET", "POST"])
+@login_required
+def edit_job(job_id):
+    db = get_db()
+    try:
+        job_oid = ObjectId(job_id)
+    except Exception:
+        flash("Invalid job ID.", "error")
+        return redirect(url_for("dashboard.index"))
+
+    user_match = {"$in": [ObjectId(current_user.id), current_user.id]}
+    base_query = {"$and": [{"_id": job_oid}, {"user_id": user_match}]}
+
+    job = db.applications.find_one(base_query)
+    if not job:
+        flash("Job not found or unauthorized.", "error")
+        return redirect(url_for("dashboard.index"))
+
+    def _norm_date(s: str):
+        s = (s or "").strip()
+        if not s:
+            return ""
+        s2 = s.replace("/", "-")
+        try:
+            return dt.datetime.strptime(s2, "%Y-%m-%d").date().isoformat()
+        except Exception:
+            return s
+
+    if request.method == "POST":
+        company_form  = (request.form.get("company") or "").strip()
+        role_form     = (request.form.get("role") or "").strip()
+        status_form   = (request.form.get("status") or "").strip().lower()
+        applied_form  = (request.form.get("applied_date") or "").strip()
+        deadline_form = (request.form.get("deadline") or "").strip()
+        link_form     = (request.form.get("link") or "").strip()
+        notes_form    = (request.form.get("notes") or "").strip()
+
+        company      = company_form  or (job.get("company") or "")
+        role         = role_form     or (job.get("role") or "")
+        status       = status_form   or (job.get("status") or "applied")
+        applied_date = _norm_date(applied_form or job.get("applied_date") or "")
+        deadline     = _norm_date(deadline_form or job.get("deadline") or "")
+        link         = link_form     or (job.get("link") or "")
+        notes        = notes_form    or (job.get("notes") or "")
+
+        if not company or not role:
+            flash("Company and role are required.", "error")
+            job.update({
+                "company": company, "role": role, "status": status,
+                "applied_date": applied_date or None, "deadline": deadline or None,
+                "link": link, "notes": notes,
+            })
+            return render_template("dashboard/edit_job.html", job=job)
+
+        update_doc = {
+            "company": company,
+            "role": role,
+            "status": status,
+            "applied_date": applied_date or None,
+            "deadline": deadline or None,
+            "link": link,
+            "notes": notes,
+            "updated_at": dt.datetime.utcnow().isoformat(),
+        }
+
+        db.applications.update_one(base_query, {"$set": update_doc})
+        flash("Job updated successfully!", "info")
+        return redirect(url_for("dashboard.index"))
+
+    return render_template("edit_job.html", job=job)
+
+@dashboard_bp.post("/status/<job_id>")
+@login_required
+def update_status(job_id):
+    db = get_db()
+    try:
+        job_oid = ObjectId(job_id)
+    except Exception:
+        flash("Invalid job ID.", "error")
+        return redirect(url_for("dashboard.index"))
+
+    user_match = {"$in": [ObjectId(current_user.id), current_user.id]}
+    base_query = {"$and": [{"_id": job_oid}, {"user_id": user_match}]}
+
+    raw = (request.form.get("status") or "").strip().lower()
+    alias = {
+        "interview": "interviewing",
+    }
+    new_status = alias.get(raw, raw)
+
+    allowed = {"applied", "interviewing", "offer", "rejected"}
+    if new_status not in allowed:
+        logger.debug("update_status: invalid status raw=%r -> mapped=%r", raw, new_status)
+        flash("Invalid status.", "error")
+        return redirect(url_for("dashboard.index"))
+
+    db.applications.update_one(
+        base_query,
+        {"$set": {"status": new_status, "updated_at": dt.datetime.utcnow().isoformat()}}
+    )
+    flash("Status updated.", "info")
+
+    return redirect(url_for(
+        "dashboard.index",
+        q=request.form.get("q") or "",
+        status=request.form.get("current_filter_status") or "",
+        sort=request.form.get("sort") or "deadline",
+        page=request.form.get("page") or 1,
+    ))
