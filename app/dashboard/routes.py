@@ -129,4 +129,31 @@ def add_job():
         flash("Job added successfully!", "info")
         return redirect(url_for("dashboard.index"))
 
-    return render_template("dadd_job.html")
+    return render_template("add_job.html")
+
+@dashboard_bp.post("/delete/<job_id>")
+@login_required
+def delete_job(job_id):
+    """Delete a job application by its ObjectId."""
+    db = get_db()
+    try:
+        job_oid = ObjectId(job_id)
+    except Exception:
+        flash("Invalid job ID.", "error")
+        return redirect(url_for("dashboard.index"))
+
+    user_match = {"$in": [ObjectId(current_user.id), current_user.id]}
+    query = {
+        "$and": [
+            {"user_id": user_match},
+            {"$or": [{"_id": job_oid}, {"_id": str(job_id)}]}
+        ]
+    }
+    result = db.applications.delete_one(query)
+
+    if result.deleted_count > 0:
+        flash("Job deleted successfully!", "info")
+    else:
+        flash("Job not found or unauthorized.", "error")
+
+    return redirect(url_for("dashboard.index"))
