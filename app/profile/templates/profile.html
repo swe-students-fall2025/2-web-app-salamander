@@ -6,7 +6,7 @@
   <h1>Your Profile</h1>
 
   {% if not name and not grad_term %}
-    <p style="margin-bottom: 2rem;">No profile details yet — click below to add them!</p>
+  <p style="margin-bottom: 2rem;">No profile details yet — click below to add them!</p>
   {% endif %}
 
   <form method="POST" id="profile-form" class="profile-form" style="display:none;">
@@ -26,25 +26,34 @@
   </form>
 
   <div id="profile-view">
-    <p><strong>Email:</strong> {{ email }}</p>
-    <p><strong>Name:</strong> {{ name or "—" }}</p>
-    <p><strong>Graduation Term:</strong> {{ grad_term or "—" }}</p>
+    <div class="profile-field-view">
+      <label>Email</label>
+      <p>{{ email }}</p>
+    </div>
+    <div class="profile-field-view">
+      <label>Name</label>
+      <p>{{ name or "—" }}</p>
+    </div>
+    <div class="profile-field-view">
+      <label>Graduation Term</label>
+      <p>{{ grad_term or "—" }}</p>
+    </div>
     <button class="profile-save-btn" onclick="toggleEdit(true)">Edit Profile</button>
   </div>
 </div>
 
 <script>
-function toggleEdit(editMode) {
-  const form = document.getElementById("profile-form");
-  const view = document.getElementById("profile-view");
-  if (editMode) {
-    form.style.display = "block";
-    view.style.display = "none";
-  } else {
-    form.style.display = "none";
-    view.style.display = "block";
+  function toggleEdit(editMode) {
+    const form = document.getElementById("profile-form");
+    const view = document.getElementById("profile-view");
+    if (editMode) {
+      form.style.display = "block";
+      view.style.display = "none";
+    } else {
+      form.style.display = "none";
+      view.style.display = "block";
+    }
   }
-}
 </script>
 
 {% endblock %}
